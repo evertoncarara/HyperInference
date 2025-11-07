@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="78.794404101 ms"></ZoomEndTime>
-      <Cursor1Time time="35.001000000 ms"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="1,021.000001 us"></ZoomEndTime>
+      <Cursor1Time time="474.566748 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="121"></NameColumnWidth>
+      <NameColumnWidth column_width="109"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="28" />
    <wvobject type="logic" fp_name="/HyperInference_tb/rst">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
@@ -32,13 +32,13 @@
       <obj_property name="ElementShortName">start</obj_property>
       <obj_property name="ObjectShortName">start</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/bit_av">
-      <obj_property name="ElementShortName">bit_av</obj_property>
-      <obj_property name="ObjectShortName">bit_av</obj_property>
-   </wvobject>
    <wvobject type="other" fp_name="/HyperInference_tb/HYPER_INFERENCE/currentState">
       <obj_property name="ElementShortName">currentState</obj_property>
       <obj_property name="ObjectShortName">currentState</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/bits_av">
+      <obj_property name="ElementShortName">bits_av</obj_property>
+      <obj_property name="ObjectShortName">bits_av</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/done">
       <obj_property name="ElementShortName">done</obj_property>
@@ -113,45 +113,77 @@
          <obj_property name="ObjectShortName">[9][11:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[0]">
-         <obj_property name="ElementShortName">[0][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[0][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[1]">
-         <obj_property name="ElementShortName">[1][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[1][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[2]">
-         <obj_property name="ElementShortName">[2][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[2][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[3]">
-         <obj_property name="ElementShortName">[3][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[3][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[4]">
-         <obj_property name="ElementShortName">[4][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[4][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[5]">
-         <obj_property name="ElementShortName">[5][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[5][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[6]">
-         <obj_property name="ElementShortName">[6][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[6][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[7]">
-         <obj_property name="ElementShortName">[7][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[7][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[8]">
-         <obj_property name="ElementShortName">[8][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[8][11:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/counters[9]">
-         <obj_property name="ElementShortName">[9][11:0]</obj_property>
-         <obj_property name="ObjectShortName">[9][11:0]</obj_property>
-      </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/feature">
+      <obj_property name="ElementShortName">feature[7:0]</obj_property>
+      <obj_property name="ObjectShortName">feature[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/address">
+      <obj_property name="ElementShortName">address[9:0]</obj_property>
+      <obj_property name="ObjectShortName">address[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/bits">
+      <obj_property name="ElementShortName">bits[79:0]</obj_property>
+      <obj_property name="ObjectShortName">bits[79:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/bits_av">
+      <obj_property name="ElementShortName">bits_av</obj_property>
+      <obj_property name="ObjectShortName">bits_av</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/done">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/currentState">
+      <obj_property name="ElementShortName">currentState</obj_property>
+      <obj_property name="ObjectShortName">currentState</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/x">
+      <obj_property name="ElementShortName">x[5:0]</obj_property>
+      <obj_property name="ObjectShortName">x[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/y">
+      <obj_property name="ElementShortName">y[5:0]</obj_property>
+      <obj_property name="ObjectShortName">y[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/data_av">
+      <obj_property name="ElementShortName">data_av</obj_property>
+      <obj_property name="ObjectShortName">data_av</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/bit_enc_rst">
+      <obj_property name="ElementShortName">bit_enc_rst</obj_property>
+      <obj_property name="ObjectShortName">bit_enc_rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/samples_addr">
+      <obj_property name="ElementShortName">samples_addr[9:0]</obj_property>
+      <obj_property name="ObjectShortName">samples_addr[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/indexes_addr">
+      <obj_property name="ElementShortName">indexes_addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">indexes_addr[11:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/idxs">
+      <obj_property name="ElementShortName">idxs[79:0][12:0]</obj_property>
+      <obj_property name="ObjectShortName">idxs[79:0][12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/idx">
+      <obj_property name="ElementShortName">idx[12:0]</obj_property>
+      <obj_property name="ObjectShortName">idx[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/i">
+      <obj_property name="ElementShortName">i</obj_property>
+      <obj_property name="ObjectShortName">i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/HyperInference_tb/HYPER_INFERENCE/HV_ENCODER/halt">
+      <obj_property name="ElementShortName">halt</obj_property>
+      <obj_property name="ObjectShortName">halt</obj_property>
    </wvobject>
 </wave_config>

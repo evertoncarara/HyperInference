@@ -60,14 +60,14 @@ package body Util_pkg is
      
     function HexStringToStdLogicVector(value: string; length: natural) return std_logic_vector is
   
-        variable binaryValue: std_logic_vector(length*4 - 1 downto 0);
+        variable binaryValue: std_logic_vector(value'length*4 - 1 downto 0);
         variable vectorLength: integer;
         variable high, low: integer;
      
     begin
      
         -- Each string digits is converted into a 4 bits binary digit.
-        vectorLength := length * 4;
+        vectorLength := binaryValue'length;
           
          
          -- String characters range from 1 to n.
@@ -78,13 +78,13 @@ package body Util_pkg is
          -- Converts the string number character by character.
          -- The left most character is placed at the right most 4 bits in the std_logic_vector.
          -- The right most character is placed at the left most 4 bits in the std_logic_vector.
-         for i in 1 to length loop
+         for i in 1 to value'length loop
              high := vectorLength - (4 *(i - 1)) - 1;
              low    := high - 3;
              binaryValue(high downto low) := CharToStdLogicVector(value(i));        
          end loop;
                   
-         return binaryValue;
+         return binaryValue(length - 1 downto 0);
       
      end HexStringToStdLogicVector;
      

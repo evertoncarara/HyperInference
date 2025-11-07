@@ -4,13 +4,14 @@ use IEEE.numeric_std.ALL;
 
 entity BitEncoder is
     generic (
+        INDEX_WIDTH : integer := 16;
         DIMENSIONS  : integer := 8192;
         THRESHOLD   : integer := 0   
     );
     port ( 
         clk         : in std_logic;
         rst         : in std_logic;
-        idx         : in std_logic_vector (15 downto 0);
+        idx         : in std_logic_vector (INDEX_WIDTH - 1 downto 0);
         data        : in std_logic_vector (7 downto 0);
         x           : in std_logic_vector (5 downto 0);
         y           : in std_logic_vector (5 downto 0);
@@ -32,13 +33,13 @@ architecture Behavioral of BitEncoder is
 begin
    
     -- Emulate roll right acording to 'data'
-    temp_idx_f <= SIGNED(idx) - SIGNED('0' & data);
+    temp_idx_f <= RESIZE(SIGNED(idx) - SIGNED('0' & data), temp_idx_f'length);
     
     -- Emulate roll right acording to 'x'
-    temp_idx_x <= SIGNED(idx) - SIGNED(x);
+    temp_idx_x <= RESIZE(SIGNED(idx) - SIGNED(x), temp_idx_x'length);
     
     -- Emulate roll right acording to 'y'
-    temp_idx_y <= SIGNED(idx) - SIGNED(y);
+    temp_idx_y <= RESIZE(SIGNED(idx) - SIGNED(y), temp_idx_y'length);
     
     D_NOT_8192: if DIMENSIONS /= 8192 generate        
         idx_f <= temp_idx_f when temp_idx_f >= 0 else temp_idx_f + TO_SIGNED(DIMENSIONS, temp_idx_f'length);
@@ -49,9 +50,9 @@ begin
     -- DIMENSIONS = 8192 is a power of 2 value
     -- 2 ** 13 = 8192
     D_8192: if DIMENSIONS = 8192 generate 
-        idx_f <= "000" & temp_idx_f(12 downto 0);   -- Exploring wrap-around to find the reight index         
-        idx_x <= "000" & temp_idx_x(12 downto 0);   -- Exploring wrap-around to find the reight index 
-        idx_y <= "000" & temp_idx_y(12 downto 0);   -- Exploring wrap-around to find the reight index 
+        idx_f <= "000" & temp_idx_f(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the reight index         
+        idx_x <= "000" & temp_idx_x(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the reight index 
+        idx_y <= "000" & temp_idx_y(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the reight index 
     end generate;
    
    

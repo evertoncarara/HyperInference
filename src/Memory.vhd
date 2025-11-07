@@ -8,6 +8,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all; 
 use std.textio.all;
+use IEEE.math_real.ceil;
 use work.Util_pkg.all;
 
 
@@ -37,7 +38,7 @@ architecture BlockRAM of Memory is
         FILE imageFile : text;
         variable fileLine : line;
         variable memoryArray : Memory;
-        variable data_str : string(1 to DATA_WIDTH/4);
+        variable data_str : string(1 to natural(ceil(real(DATA_WIDTH) / real(4))));
         
         variable i : natural := 0;
     begin 
@@ -56,7 +57,7 @@ architecture BlockRAM of Memory is
             while NOT (endfile(imageFile)) loop
                 readline (imageFile, fileLine);
                 read (fileLine, data_str);
-                memoryArray(i) := HexStringToStdLogicVector(data_str, DATA_WIDTH/4);
+                memoryArray(i) := HexStringToStdLogicVector(data_str, DATA_WIDTH);
                 i := i + 1;
             end loop;
             file_close(imageFile);
