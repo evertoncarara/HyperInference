@@ -8,9 +8,10 @@ end HyperInference_tb;
 architecture Behavioral of HyperInference_tb is
 
     constant DIMENSIONS         : integer := 8192;
-    constant CLASSES            : integer := 10;
-    constant PARALLEL           : integer := 78; -- 78 limit for MNIST
-
+    constant CLASSES            : integer := 2;
+    constant PARALLEL           : integer := 256; -- 78 limit for MNIST; 156 with 2 counters, 262 with 4 counters
+    constant COUNTER_ADDERS     : integer := 5;
+    
     -- Memories constants
     constant SAMPLE_ADDR_WIDTH  : integer := 10;
     constant SAMPLE_DATA_WIDTH  : integer := 8;   
@@ -55,6 +56,7 @@ begin
             SAMPLE_DATA_WIDTH   => SAMPLE_DATA_WIDTH,
             CLASS_ADDR_WIDTH    => CLASS_ADDR_WIDTH,
             CLASS_DATA_WIDTH    => CLASS_DATA_WIDTH,
+            COUNTER_ADDERS      => COUNTER_ADDERS,
             PARALLEL            => PARALLEL,
             DIMENSIONS          => DIMENSIONS,
             TOTAL_INDEXES       => TOTAL_INDEXES,

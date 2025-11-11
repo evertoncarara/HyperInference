@@ -8,7 +8,8 @@ entity HyperInference is
         SAMPLE_DATA_WIDTH   : integer := 8;
         CLASS_DATA_WIDTH    : integer := 26;    -- 26 is enough for ISOLET.
         CLASS_ADDR_WIDTH    : integer := 12;
-        PARALLEL            : integer := 64;
+        PARALLEL            : integer := 256;
+        COUNTER_ADDERS      : integer := 5;
         DIMENSIONS          : integer := 8192;
         TOTAL_INDEXES       : integer := 8192;
         CLASSES             : integer := 10        
@@ -33,16 +34,16 @@ architecture Behavioral of HyperInference is
     signal counters : CountersArray(0 to 9);
     signal smaller  : UNSIGNED(11 downto 0);
     
-    signal bits_av: std_logic;
+    signal bits_av, encoder_done, done_reg: std_logic;
     signal bits, encoded_bits: std_logic_vector(PARALLEL - 1 downto 0);
     signal counting: std_logic;
     
-    type State is (INIT, WAITING_BITS, HAMMING, READ_CLASS_HVS_BITS);
+    type State is (INIT, WAITING_BITS, HAMMING, READ_CLASS_HVS_BITS, CLASSIFICATION, FINISHED);
     signal currentState : State;
     
     signal i        : integer;
-    signal count_bits : integer;    
-      
+    signal count_bits : integer;   
+          
 begin
         
     HV_ENCODER: entity work.Encoder(Behavioral)
@@ -64,7 +65,7 @@ begin
             bits_av     => bits_av,
             bits        => bits,
             halt        => counting,
-            done        => done           
+            done        => encoder_done           
         );
         
     CLASS_HVS: entity work.Memory(BlockRAM)
@@ -82,12 +83,15 @@ begin
             data_o          => class_bits
         );
         
+    -- Backpressure
+    -- Used to halt encoder when it is not ready to compute hamming distance (currentState is not WAITING_BITS)
     counting <= '1' when currentState = HAMMING or currentState = READ_CLASS_HVS_BITS else '0';
     
+    done <= '1' when currentState = FINISHED else '0';
+            
     process(clk, rst)
     begin
         if rst = '1' then
-            counters <= (others=>(others=>'0'));            
             currentState <= INIT;
             
         elsif rising_edge(clk) then
@@ -95,47 +99,99 @@ begin
                 when INIT =>
                     class_addr <= (others=>'0');
                     currentState <= WAITING_BITS;
-                    
-                when WAITING_BITS =>
                     i <= 0;
-                    if bits_av = '1' then
-                        encoded_bits <= bits;                        
-                        currentState <= HAMMING;
+                    
+                when WAITING_BITS =>                    
+                    encoded_bits <= bits;
+                    count_bits <= 0;
+                    
+                    if bits_av = '1' then                                                
+                        currentState <= HAMMING;                       
+                    
+                    elsif done_reg = '1' then
                         smaller <= counters(0);
-                        class <= "00000";
-                        count_bits <= 0;
+                        class <= STD_LOGIC_VECTOR(TO_UNSIGNED(0, class'length));
+                        currentState <= CLASSIFICATION;
                     end if;
                     
                 when HAMMING =>
-                    if count_bits < PARALLEL then
-                        if encoded_bits(count_bits) = class_bits(i) then
-                            counters(i) <= counters(i) + 1;                       
-                        end if;
+                    i <= i + COUNTER_ADDERS;
                         
-                        if counters(i) < smaller then
-                            smaller <= counters(i);
-                            class <= STD_LOGIC_VECTOR(TO_UNSIGNED(i, class'length));
-                        end if;
+                    if i + COUNTER_ADDERS >= CLASSES then
+                        i <= 0;
+                        class_addr <= class_addr + 1;
+                        count_bits <= count_bits + 1;                        
                         
-                        i <= i + 1;
-                        
-                        if i = CLASSES - 1 then
-                            class_addr <= class_addr + 1;
-                            count_bits <= count_bits + 1;
-                            i <= 0;
+                        if count_bits = PARALLEL - 1 then
+                            currentState <= WAITING_BITS;
+                        else
                             currentState <= READ_CLASS_HVS_BITS;
                         end if;
-                    else
-                        currentState <= WAITING_BITS;
-                    end if;
+                    end if; 
                     
                 when READ_CLASS_HVS_BITS =>
                     currentState <= HAMMING;
                     
+                when CLASSIFICATION =>
+                    if counters(i) < smaller then
+                        smaller <= counters(i);
+                        class <= STD_LOGIC_VECTOR(TO_UNSIGNED(i, class'length));
+                    end if;
+                    
+                    i <= i + 1;
+                    
+                    if i = CLASSES - 1 then
+                        currentState <= FINISHED;
+                    end if;
+                    
+                when FINISHED =>
+                    currentState <= WAITING_BITS; 
+                    
                 when others =>
             end case;     
         end if;
-    end process;    
+    end process;
+    
+    -- Store the done signal generated by Encoder.
+    -- This signal can be missed when it arrives and this is not ready to catch it (currentState is not WAITING_BITS) 
+    process(clk, rst)
+    begin
+        if rst = '1' then
+            done_reg <= '0';
+            
+        elsif rising_edge(clk) then
+            if encoder_done = '1' then
+                done_reg <= '1';
+            end if;
+            
+            if currentState = CLASSIFICATION then
+                done_reg <= '0';
+            end if;
+            
+        end if;
+    end process;
+
+    
+    -- Adders used to compute the hamming distance
+    ADDERS: for c in 0 to COUNTER_ADDERS - 1 generate
+        process(clk, rst)
+        begin
+            if rst = '1' then
+                counters <= (others=>(others=>'0'));
+            elsif rising_edge(clk) then
+                if currentState = HAMMING then
+                
+                    for j in 0 to COUNTER_ADDERS - 1 loop
+                        if encoded_bits(count_bits) = class_bits(i + j) and (i + j) < CLASSES then
+                            counters(i + j) <= counters(i + j) + 1;                     
+                        end if;
+                    end loop;
+                
+                end if;
+            end if;
+        end process;
+    
+    end generate;    
   
 
 end Behavioral;
