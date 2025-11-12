@@ -50,9 +50,9 @@ begin
     -- DIMENSIONS = 8192 is a power of 2 value
     -- 2 ** 13 = 8192
     D_8192: if DIMENSIONS = 8192 generate 
-        idx_f <= "000" & temp_idx_f(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the reight index         
-        idx_x <= "000" & temp_idx_x(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the reight index 
-        idx_y <= "000" & temp_idx_y(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the reight index 
+        idx_f <= "000" & temp_idx_f(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the right index         
+        idx_x <= "000" & temp_idx_x(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the right index 
+        idx_y <= "000" & temp_idx_y(INDEX_WIDTH - 1 downto 0);   -- Exploring wrap-around to find the right index 
     end generate;
    
    
