@@ -4,13 +4,14 @@ use IEEE.numeric_std.ALL;
 
 entity Encoder is
     generic (
-        PARALLEL        : integer := 4;
-        FEATURE_WIDTH   : integer := 8;
-        INDEX_WIDTH     : integer := 16; 
-        DIMENSIONS      : integer := 8192;
-        TOTAL_INDEXES   : integer := 4;
-        MAX_X           : integer := 28;
-        MAX_Y           : integer := 28
+        PARALLEL            : integer := 4;
+        FEATURE_WIDTH       : integer := 8;
+        INDEX_WIDTH         : integer := 16; 
+        DIMENSIONS          : integer := 8192;
+        EFFECTIVE_INDEXES   : integer := 4;
+        MAX_X               : integer := 28;
+        MAX_Y               : integer := 28;
+        INDEXES_IMG         : string := ""
     );
     port (
         clk     : in std_logic;
@@ -25,7 +26,7 @@ entity Encoder is
     );
 end Encoder;
 
-architecture Behavioral of Encoder is   
+architecture MNIST of Encoder is   
     
     constant ADDR_WIDTH: integer := 12;
     
@@ -58,7 +59,7 @@ begin
         
     INDEXES: entity work.Memory(BlockRAM)
         generic map (
-            imageFileName   => "indexes.txt",         
+            imageFileName   => INDEXES_IMG,         
             DATA_WIDTH      => INDEX_WIDTH,
             ADDR_WIDTH      => ADDR_WIDTH
         )
@@ -71,8 +72,8 @@ begin
             data_o          => idx
         );
     
-    PARALLEL_BIT_ENCODERS: for i in 0 to PARALLEL - 1 generate
-        BIT_ENCODER: entity work.BitEncoder 
+    PARALLEL_BIT_ENCODERS: for i in 0 to PARALLEL - 1 generate    
+        BIT_ENCODER: entity work.BitEncoder(Behavioral) 
             generic map (
                 INDEX_WIDTH => INDEX_WIDTH,
                 DIMENSIONS  => DIMENSIONS,
@@ -88,7 +89,8 @@ begin
                 y       => STD_LOGIC_VECTOR(y),
                 b       => bits(i)
             );
-    end generate;
+            
+    end generate PARALLEL_BIT_ENCODERS;
     
  
     bit_enc_rst <= '1' when currentState = INIT_SAMPLE_MEM_ADDR else '0';
@@ -125,7 +127,7 @@ begin
                 when READ_INDEXES =>                    
                     idxs(i) <= idx;
                     
-                    if i < PARALLEL - 1 and indexes_addr < TOTAL_INDEXES then                        
+                    if i < PARALLEL - 1 and indexes_addr < EFFECTIVE_INDEXES then                        
                         i <= i + 1;
                         indexes_addr <= indexes_addr + 1; 
                     else       
@@ -155,7 +157,7 @@ begin
                     
                 when BITS_AVAILABLE =>
                     if halt = '0' then
-                        if indexes_addr >= TOTAL_INDEXES - 1 then
+                        if indexes_addr >= EFFECTIVE_INDEXES - 1 then
                             currentState <= FINISH;
                         else
                             currentState <= INIT_SAMPLE_MEM_ADDR;
@@ -170,5 +172,4 @@ begin
         end if;  
     end process;
 
-
-end Behavioral;
+end MNIST;

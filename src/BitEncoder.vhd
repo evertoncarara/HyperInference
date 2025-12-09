@@ -87,6 +87,4 @@ begin
     
     b <= '1' when count > THRESHOLD else '0';
     
-
-
 end Behavioral;

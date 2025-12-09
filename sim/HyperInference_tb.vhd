@@ -9,17 +9,22 @@ architecture Behavioral of HyperInference_tb is
 
     constant DIMENSIONS         : integer := 8192;
     constant CLASSES            : integer := 10;
-    constant PARALLEL           : integer := 1; -- 78 limit for MNIST; 156 with 2 counters, 262 with 4 counters
+    constant PARALLEL           : integer := 32; -- 78 limit for MNIST; 156 with 2 counters, 262 with 4 counters
     constant COUNTER_ADDERS     : integer := 1;
+    
+    -- Memory image files
+    constant SAMPLE_IMG         : string := "MNIST_sample.txt";
+    constant CLASSES_IMG        : string := "MNIST_hvs.txt";
+    constant INDEXES_IMG        : string := "MNIST_idxs.txt";
     
     -- Memories constants
     constant SAMPLE_ADDR_WIDTH  : integer := 10;
     constant SAMPLE_DATA_WIDTH  : integer := 8;   
     
     constant CLASS_ADDR_WIDTH   : integer := 12;
-    constant CLASS_DATA_WIDTH   : integer := 26; -- 26 is enough for ISOLET.
-    
-    constant TOTAL_INDEXES      : integer := 3200;        
+    constant CLASS_DATA_WIDTH   : integer := CLASSES; 
+       
+    constant EFFECTIVE_INDEXES  : integer := 3200;        
     
     signal samples_addr : std_logic_vector(SAMPLE_ADDR_WIDTH - 1 downto 0);
     signal feature      : std_logic_vector(SAMPLE_DATA_WIDTH - 1 downto 0);    
@@ -32,12 +37,39 @@ architecture Behavioral of HyperInference_tb is
       
 begin
 
-    clk <= not clk after 5 ns; -- 10ns = 100MHz
-    rst <= '1', '0' after 15 ns;
-    
+    --clk <= not clk after 2.5 ns;  -- 5ns = 200MHz
+    --clk <= not clk after 2.75 ns; -- 5.5ns = 181.81MHz
+    clk <= not clk after 3 ns;      -- 6ns = 166,66MHz
+    --clk <= not clk after 3.5 ns;    -- 7ns = 142.85MHz
+    rst <= '1', '0' after 5 ns;
+            
+    HYPER_INFERENCE: entity work.HyperInference(behavioral)
+        generic map (
+            SAMPLE_ADDR_WIDTH   => SAMPLE_ADDR_WIDTH,
+            SAMPLE_DATA_WIDTH   => SAMPLE_DATA_WIDTH,
+            CLASS_ADDR_WIDTH    => CLASS_ADDR_WIDTH,
+            CLASS_DATA_WIDTH    => CLASS_DATA_WIDTH,
+            COUNTER_ADDERS      => COUNTER_ADDERS,
+            PARALLEL            => PARALLEL,
+            DIMENSIONS          => DIMENSIONS,
+            EFFECTIVE_INDEXES   => EFFECTIVE_INDEXES,
+            CLASSES             => CLASSES,
+            INDEXES_IMG         => INDEXES_IMG,
+            CLASSES_IMG         => CLASSES_IMG
+        )
+        port map (
+            clk             => clk,
+            rst             => rst,
+            start           => start,
+            samples_addr    => samples_addr,
+            feature         => feature,            
+            done            => done           
+        );
+        
+        
     SAMPLE: entity work.Memory(BlockRAM)
         generic map (
-            imageFileName   => "image.txt",         
+            imageFileName   => SAMPLE_IMG,         
             DATA_WIDTH      => SAMPLE_DATA_WIDTH,
             ADDR_WIDTH      => SAMPLE_ADDR_WIDTH
         )
@@ -48,27 +80,6 @@ begin
             read_address    => STD_LOGIC_VECTOR(samples_addr),
             data_i          => (others=>'0'),        
             data_o          => feature
-        );
-    
-    HYPER_INFERENCE: entity work.HyperInference(behavioral)
-        generic map (
-            SAMPLE_ADDR_WIDTH   => SAMPLE_ADDR_WIDTH,
-            SAMPLE_DATA_WIDTH   => SAMPLE_DATA_WIDTH,
-            CLASS_ADDR_WIDTH    => CLASS_ADDR_WIDTH,
-            CLASS_DATA_WIDTH    => CLASS_DATA_WIDTH,
-            COUNTER_ADDERS      => COUNTER_ADDERS,
-            PARALLEL            => PARALLEL,
-            DIMENSIONS          => DIMENSIONS,
-            TOTAL_INDEXES       => TOTAL_INDEXES,
-            CLASSES             => CLASSES
-        )
-        port map (
-            clk             => clk,
-            rst             => rst,
-            start           => start,
-            samples_addr    => samples_addr,
-            feature         => feature,            
-            done            => done           
         );
         
    

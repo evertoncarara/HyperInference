@@ -6,13 +6,15 @@ entity HyperInference is
     generic (
         SAMPLE_ADDR_WIDTH   : integer := 10;
         SAMPLE_DATA_WIDTH   : integer := 8;
-        CLASS_DATA_WIDTH    : integer := 26;    -- 26 is enough for ISOLET.
+        CLASS_DATA_WIDTH    : integer := 10;    -- 26 is enough for ISOLET.
         CLASS_ADDR_WIDTH    : integer := 12;
-        PARALLEL            : integer := 256;
-        COUNTER_ADDERS      : integer := 5;
+        PARALLEL            : integer := 32;
+        COUNTER_ADDERS      : integer := 1;
         DIMENSIONS          : integer := 8192;
-        TOTAL_INDEXES       : integer := 8192;
-        CLASSES             : integer := 10        
+        EFFECTIVE_INDEXES   : integer := 8192;
+        CLASSES             : integer := 10;
+        INDEXES_IMG         : string := "";
+        CLASSES_IMG         : string := ""      
     );
     port (
         clk             : in std_logic;
@@ -31,7 +33,7 @@ architecture Behavioral of HyperInference is
     signal class_bits   : std_logic_vector(CLASS_DATA_WIDTH - 1 downto 0);      
     
     type CountersArray is array(natural range <>) of UNSIGNED(11 downto 0);
-    signal counters : CountersArray(0 to 9);
+    signal counters : CountersArray(0 to CLASSES - 1);
     signal smaller  : UNSIGNED(11 downto 0);
     
     signal bits_av, encoder_done, done_reg: std_logic;
@@ -41,20 +43,20 @@ architecture Behavioral of HyperInference is
     type State is (INIT, WAITING_BITS, HAMMING, READ_CLASS_HVS_BITS, CLASSIFICATION, FINISHED);
     signal currentState : State;
     
-    signal i        : integer;
-    signal count_bits : integer;   
+    signal i            : integer;
+    signal count_bits   : integer;   
           
 begin
-        
-    HV_ENCODER: entity work.Encoder(Behavioral)
+    HV_ENCODER: entity work.Encoder(MNIST)
         generic map (
-            PARALLEL        => PARALLEL,
-            FEATURE_WIDTH   => SAMPLE_DATA_WIDTH,
-            INDEX_WIDTH     => 13, 
-            DIMENSIONS      => DIMENSIONS,
-            TOTAL_INDEXES   => TOTAL_INDEXES,
-            MAX_X           => 28,
-            MAX_Y           => 28
+            PARALLEL            => PARALLEL,
+            FEATURE_WIDTH       => SAMPLE_DATA_WIDTH,
+            INDEX_WIDTH         => 13, 
+            DIMENSIONS          => DIMENSIONS,
+            EFFECTIVE_INDEXES   => EFFECTIVE_INDEXES,
+            MAX_X               => 28,
+            MAX_Y               => 28,
+            INDEXES_IMG         => INDEXES_IMG
         )
         port map (
             clk         => clk,
@@ -67,10 +69,10 @@ begin
             halt        => counting,
             done        => encoder_done           
         );
-        
+               
     CLASS_HVS: entity work.Memory(BlockRAM)
         generic map (
-            imageFileName   => "class_hvs.txt",         
+            imageFileName   => CLASSES_IMG,         
             DATA_WIDTH      => CLASS_DATA_WIDTH,
             ADDR_WIDTH      => CLASS_ADDR_WIDTH
         )
