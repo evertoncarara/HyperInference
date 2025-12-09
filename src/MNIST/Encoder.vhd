@@ -26,7 +26,7 @@ entity Encoder is
     );
 end Encoder;
 
-architecture MNIST of Encoder is   
+architecture Behavioral of Encoder is   
     
     constant ADDR_WIDTH: integer := 12;
     
@@ -157,7 +157,7 @@ begin
                     
                 when BITS_AVAILABLE =>
                     if halt = '0' then
-                        if indexes_addr >= EFFECTIVE_INDEXES - 1 then
+                        if indexes_addr >= EFFECTIVE_INDEXES then
                             currentState <= FINISH;
                         else
                             currentState <= INIT_SAMPLE_MEM_ADDR;
@@ -172,4 +172,4 @@ begin
         end if;  
     end process;
 
-end MNIST;
+end Behavioral;

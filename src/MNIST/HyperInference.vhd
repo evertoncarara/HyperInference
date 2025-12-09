@@ -47,7 +47,7 @@ architecture Behavioral of HyperInference is
     signal count_bits   : integer;   
           
 begin
-    HV_ENCODER: entity work.Encoder(MNIST)
+    HV_ENCODER: entity work.Encoder(Behavioral)
         generic map (
             PARALLEL            => PARALLEL,
             FEATURE_WIDTH       => SAMPLE_DATA_WIDTH,

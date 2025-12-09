@@ -8,14 +8,14 @@ end HyperInference_tb;
 architecture Behavioral of HyperInference_tb is
 
     constant DIMENSIONS         : integer := 8192;
-    constant CLASSES            : integer := 10;
-    constant PARALLEL           : integer := 32; -- 78 limit for MNIST; 156 with 2 counters, 262 with 4 counters
+    constant CLASSES            : integer := 6;
+    constant PARALLEL           : integer := 32; 
     constant COUNTER_ADDERS     : integer := 1;
     
     -- Memory image files
-    constant SAMPLE_IMG         : string := "MNIST_sample.txt";
-    constant CLASSES_IMG        : string := "MNIST_hvs.txt";
-    constant INDEXES_IMG        : string := "MNIST_idxs.txt";
+    constant SAMPLE_IMG         : string := "UCIHAR_sample.txt";
+    constant CLASSES_IMG        : string := "UCIHAR_hvs.txt";
+    constant INDEXES_IMG        : string := "UCIHAR_idxs.txt";
     
     -- Memories constants
     constant SAMPLE_ADDR_WIDTH  : integer := 10;
@@ -24,7 +24,7 @@ architecture Behavioral of HyperInference_tb is
     constant CLASS_ADDR_WIDTH   : integer := 12;
     constant CLASS_DATA_WIDTH   : integer := CLASSES; 
        
-    constant EFFECTIVE_INDEXES  : integer := 3200;        
+    constant EFFECTIVE_INDEXES  : integer := 3400;        
     
     signal samples_addr : std_logic_vector(SAMPLE_ADDR_WIDTH - 1 downto 0);
     signal feature      : std_logic_vector(SAMPLE_DATA_WIDTH - 1 downto 0);    
