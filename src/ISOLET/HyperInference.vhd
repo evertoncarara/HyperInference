@@ -6,15 +6,15 @@ entity HyperInference is
     generic (
         SAMPLE_ADDR_WIDTH   : integer := 10;
         SAMPLE_DATA_WIDTH   : integer := 8;
-        CLASS_DATA_WIDTH    : integer := 6;
+        CLASS_DATA_WIDTH    : integer := 26;
         CLASS_ADDR_WIDTH    : integer := 12;
-        PARALLEL            : integer := 246;
-        COUNTER_ADDERS      : integer := 3;
+        PARALLEL            : integer := 32;
+        COUNTER_ADDERS      : integer := 2;
         DIMENSIONS          : integer := 8192;
         EFFECTIVE_INDEXES   : integer := 8192;
-        CLASSES             : integer := 6;
-        INDEXES_IMG         : string := "UCIHAR_idxs.txt";
-        CLASSES_IMG         : string := "UCIHAR_hvs.txt"      
+        CLASSES             : integer := 26;
+        INDEXES_IMG         : string := "ISOLET_idxs.txt";
+        CLASSES_IMG         : string := "ISOLET_hvs.txt"      
     );
     port (
         clk             : in std_logic;
@@ -54,7 +54,7 @@ begin
             INDEX_WIDTH         => 13, 
             DIMENSIONS          => DIMENSIONS,
             EFFECTIVE_INDEXES   => EFFECTIVE_INDEXES,
-            MAX_X               => 561,
+            MAX_X               => 617,
             INDEXES_IMG         => INDEXES_IMG
         )
         port map (
@@ -128,7 +128,7 @@ begin
                         else
                             currentState <= READ_CLASS_HVS_BITS;
                         end if;
-                    end if;
+                    end if;                     
                     
                 when READ_CLASS_HVS_BITS =>
                     currentState <= HAMMING;
@@ -183,8 +183,11 @@ begin
                 if currentState = HAMMING then
                 
                     for j in 0 to COUNTER_ADDERS - 1 loop
-                        if encoded_bits(count_bits) = class_bits(i + j) and (i + j) < CLASSES then
-                            counters(i + j) <= counters(i + j) + 1;                     
+                        
+                        if (i + j) < CLASSES then
+                            if encoded_bits(count_bits) = class_bits(i + j) then
+                                counters(i + j) <= counters(i + j) + 1;                     
+                            end if;
                         end if;
                     end loop;
                 

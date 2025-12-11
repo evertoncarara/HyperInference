@@ -9,8 +9,8 @@ architecture Behavioral of HyperInference_tb is
 
     constant DIMENSIONS         : integer := 8192;
     constant CLASSES            : integer := 6;
-    constant PARALLEL           : integer := 32; 
-    constant COUNTER_ADDERS     : integer := 1;
+    constant PARALLEL           : integer := 256; 
+    constant COUNTER_ADDERS     : integer := 3;
     
     -- Memory image files
     constant SAMPLE_IMG         : string := "UCIHAR_sample.txt";
@@ -24,7 +24,7 @@ architecture Behavioral of HyperInference_tb is
     constant CLASS_ADDR_WIDTH   : integer := 12;
     constant CLASS_DATA_WIDTH   : integer := CLASSES; 
        
-    constant EFFECTIVE_INDEXES  : integer := 3400;        
+    constant EFFECTIVE_INDEXES  : integer := 3200;        
     
     signal samples_addr : std_logic_vector(SAMPLE_ADDR_WIDTH - 1 downto 0);
     signal feature      : std_logic_vector(SAMPLE_DATA_WIDTH - 1 downto 0);    
@@ -39,8 +39,11 @@ begin
 
     --clk <= not clk after 2.5 ns;  -- 5ns = 200MHz
     --clk <= not clk after 2.75 ns; -- 5.5ns = 181.81MHz
-    clk <= not clk after 3 ns;      -- 6ns = 166,66MHz
+    --clk <= not clk after 3 ns;      -- 6ns = 166,66MHz
     --clk <= not clk after 3.5 ns;    -- 7ns = 142.85MHz
+    --clk <= not clk after 3.25 ns;    -- 7.5ns = 133.335MHz
+    clk <= not clk after 4 ns;    -- 8ns = 125MHz
+    
     rst <= '1', '0' after 5 ns;
             
     HYPER_INFERENCE: entity work.HyperInference(behavioral)

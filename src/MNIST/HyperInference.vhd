@@ -6,15 +6,15 @@ entity HyperInference is
     generic (
         SAMPLE_ADDR_WIDTH   : integer := 10;
         SAMPLE_DATA_WIDTH   : integer := 8;
-        CLASS_DATA_WIDTH    : integer := 10;    -- 26 is enough for ISOLET.
+        CLASS_DATA_WIDTH    : integer := 10;    
         CLASS_ADDR_WIDTH    : integer := 12;
-        PARALLEL            : integer := 32;
+        PARALLEL            : integer := 16;
         COUNTER_ADDERS      : integer := 1;
         DIMENSIONS          : integer := 8192;
         EFFECTIVE_INDEXES   : integer := 8192;
         CLASSES             : integer := 10;
-        INDEXES_IMG         : string := "";
-        CLASSES_IMG         : string := ""      
+        INDEXES_IMG         : string := "MNIST_idxs.txt";
+        CLASSES_IMG         : string := "MNIST_hvs.txt"      
     );
     port (
         clk             : in std_logic;

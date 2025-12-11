@@ -8,14 +8,14 @@ end HyperInference_tb;
 architecture Behavioral of HyperInference_tb is
 
     constant DIMENSIONS         : integer := 8192;
-    constant CLASSES            : integer := 10;
-    constant PARALLEL           : integer := 16; 
-    constant COUNTER_ADDERS     : integer := 1;
+    constant CLASSES            : integer := 26;
+    constant PARALLEL           : integer := 256; 
+    constant COUNTER_ADDERS     : integer := 13;
     
     -- Memory image files
-    constant SAMPLE_IMG         : string := "MNIST_sample.txt";
-    constant CLASSES_IMG        : string := "MNIST_hvs.txt";
-    constant INDEXES_IMG        : string := "MNIST_idxs.txt";
+    constant SAMPLE_IMG         : string := "ISOLET_sample.txt";
+    constant CLASSES_IMG        : string := "ISOLET_hvs.txt";
+    constant INDEXES_IMG        : string := "ISOLET_idxs.txt";
     
     -- Memories constants
     constant SAMPLE_ADDR_WIDTH  : integer := 10;
@@ -24,7 +24,7 @@ architecture Behavioral of HyperInference_tb is
     constant CLASS_ADDR_WIDTH   : integer := 12;
     constant CLASS_DATA_WIDTH   : integer := CLASSES; 
        
-    constant EFFECTIVE_INDEXES  : integer := 3200;        
+    constant EFFECTIVE_INDEXES  : integer := 3700;        
     
     signal samples_addr : std_logic_vector(SAMPLE_ADDR_WIDTH - 1 downto 0);
     signal feature      : std_logic_vector(SAMPLE_DATA_WIDTH - 1 downto 0);    
@@ -39,10 +39,11 @@ begin
 
     --clk <= not clk after 2.5 ns;  -- 5ns = 200MHz
     --clk <= not clk after 2.75 ns; -- 5.5ns = 181.81MHz
-    clk <= not clk after 3 ns;      -- 6ns = 166,66MHz
+    --clk <= not clk after 3 ns;      -- 6ns = 166,66MHz
     --clk <= not clk after 3.25 ns;      -- 6.5ns = 153,84MHz
     --clk <= not clk after 3.5 ns;    -- 7ns = 142.85MHz
-    --clk <= not clk after 4 ns;    -- 8ns = 125MHz
+    --clk <= not clk after 4 ns;      -- 8ns = 125MHz
+    clk <= not clk after 4.5 ns;    -- 9ns = 111.11MHz
     
     rst <= '1', '0' after 5 ns;
             
