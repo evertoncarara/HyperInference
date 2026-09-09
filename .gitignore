@@ -1,0 +1,9 @@
+/synthesis/work/*
+/synthesis/work/.*
+!/synthesis/work/.gitkeep*
+
+/synthesis/outputs/reports/*
+!/synthesis/outputs/reports/.gitkeep
+
+/synthesis/outputs/deliverables/*
+!/synthesis/outputs/deliverables/last/sdf_cmd_file.cmd

@@ -1,0 +1,6 @@
+HVBits.vhd
+Memory.vhd
+Util_pkg.vhd
+BitEncoder.vhd
+Encoder.vhd
+HyperInference.vhd
