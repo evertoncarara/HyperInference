@@ -8,13 +8,15 @@ entity HyperInference is
         SAMPLE_DATA_WIDTH   : integer := 8;
         CLASS_DATA_WIDTH    : integer := 10;    
         CLASS_ADDR_WIDTH    : integer := 12;
-        PARALLEL            : integer := 16;
+        PARALLEL            : integer := 256;
         COUNTER_ADDERS      : integer := 1;
-        DIMENSIONS          : integer := 8192;
-        EFFECTIVE_INDEXES   : integer := 8192;
+        DIMENSIONS          : integer := 4096;
+        EFFECTIVE_INDEXES   : integer := 4096;
         CLASSES             : integer := 10;
-        INDEXES_IMG         : string := "MNIST_idxs.txt";
-        CLASSES_IMG         : string := "MNIST_hvs.txt"      
+        -- INDEXES_IMG         : string := "MNIST_idxs.txt";
+        -- CLASSES_IMG         : string := "MNIST_hvs.txt" 
+        INDEXES_IMG         : string := "UNUSED";
+        CLASSES_IMG         : string := "UNUSED"       
     );
     port (
         clk             : in std_logic;
@@ -70,7 +72,7 @@ begin
             done        => encoder_done           
         );
                
-    CLASS_HVS: entity work.Memory(BlockRAM)
+    CLASS_HVS: entity work.Memory
         generic map (
             imageFileName   => CLASSES_IMG,         
             DATA_WIDTH      => CLASS_DATA_WIDTH,

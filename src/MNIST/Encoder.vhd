@@ -11,7 +11,7 @@ entity Encoder is
         EFFECTIVE_INDEXES   : integer := 4;
         MAX_X               : integer := 28;
         MAX_Y               : integer := 28;
-        INDEXES_IMG         : string := ""
+        INDEXES_IMG         : string := "UNUSED"
     );
     port (
         clk     : in std_logic;
@@ -57,7 +57,7 @@ begin
 
     address <= STD_LOGIC_VECTOR(samples_addr); 
         
-    INDEXES: entity work.Memory(BlockRAM)
+    INDEXES: entity work.Memory
         generic map (
             imageFileName   => INDEXES_IMG,         
             DATA_WIDTH      => INDEX_WIDTH,

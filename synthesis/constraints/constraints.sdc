@@ -1,5 +1,5 @@
-set MAIN_CLOCK_NAME clk_i
-set MAIN_RST_NAME rst_i
+set MAIN_CLOCK_NAME clk
+set MAIN_RST_NAME rst
 
 set period_clk [format "%.2f" [expr 1000.0 / $freq_mhz]] ;# (100 ns = 10 MHz) (10 ns = 100 MHz) (2 ns = 500 MHz) (1 ns = 1 GHz)
 set clk_uncertainty 0.05 ;# ns (“a guess”)

@@ -10,6 +10,7 @@ set ROOT_DIR $env(ROOT)/HDLs/HyperInference
 set freq_mhz $env(FREQ_MHZ)
 set CORNER $env(OP_CORNER)
 set NODE $env(TECH)
+set DATASET $env(DATASET)
 
 # ---------------------------------------------------------------
 # ------------ Setting paths from archivers ---------------------
@@ -26,9 +27,10 @@ if {$NODE == 22} {
 set_db init_hdl_search_path { \
     ${ROOT_DIR}/src/comon     \
     ${ROOT_DIR}/src/MNIST     \
-    ${ROOT_DIR}/src/ISOLET    \
-    ${ROOT_DIR}/src/UCIHAR    \
 }
+#     ${ROOT_DIR}/src/ISOLET    \
+#     ${ROOT_DIR}/src/UCIHAR    \
+# }
 
 
 # Set the paths to search the libs and LEF files
@@ -86,17 +88,22 @@ if {$NODE == 45} {
 
 
 # Load the HDL filelist
-read_hdl -language v2001 -f "${FILELIST_SEARCH_PATH}${DESIGN}.flist"
+read_hdl -language vhdl ${ROOT_DIR}/src/comon/HVBits.vhd
+read_hdl -language vhdl ${ROOT_DIR}/src/comon/Util_pkg.vhd
+read_hdl -language vhdl ${ROOT_DIR}/src/comon/Memory_blackbox.vhd
+read_hdl -language vhdl ${ROOT_DIR}/src/${DATASET}/BitEncoder.vhd
+read_hdl -language vhdl ${ROOT_DIR}/src/${DATASET}/Encoder.vhd
+read_hdl -language vhdl ${ROOT_DIR}/src/${DATASET}/HyperInference.vhd
 
 
 # ---------------------------------------------------------------
 # ------ Elabore the design and defines constraints -------------
 # ---------------------------------------------------------------
-
+#suspend
 # Elaborate the design
 elaborate HyperInference
 
-
+#suspend
 check_design > "${REPORTS_PATH}${NODE}nm/${freq_mhz}/${CORNER}/${DESIGN}_check_design.rpt"
 
 # Read constraints SDC files
@@ -110,7 +117,11 @@ report_timing -lint > "${REPORTS_PATH}${NODE}nm/${freq_mhz}/${CORNER}/${DESIGN}_
 # report_sdb_annotation >> "${REPORTS_PATH}${NODE}nm/${freq_mhz}/${CORNER}/${DESIGN}_read_vcd.rpt"  
 
 # Defines the instances that could not ungroup
-#set_db hinst:cv32e40p_wrapper/core_i/id_stage_i/register_file_i .ungroup_ok false
+set_db hinst:HyperInference/CLASS_HVS .ungroup_ok false
+set_db hinst:HyperInference/CLASS_HVS .preserve true
+set_db hinst:HyperInference/HV_ENCODER/INDEXES .ungroup_ok false
+set_db hinst:HyperInference/HV_ENCODER/INDEXES .preserve true
+
 
 # A tcl script to make a list with MBFF cell names
 
@@ -124,12 +135,12 @@ set_db [get_db lib_cells *CKLNQ*] .avoid false
 set_db [get_db lib_cells *CKLHQ*] .avoid false
 
 
-set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R0_inst] .ungroup_ok false
-set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R1_inst] .ungroup_ok false
-set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R2_inst] .ungroup_ok false
-set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R3_inst] .ungroup_ok false
-set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R4_inst] .ungroup_ok false
-set_db [get_db hinst:trunc_adder_SH/comp_inst] .ungroup_ok false
+# set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R0_inst] .ungroup_ok false
+# set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R1_inst] .ungroup_ok false
+# set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R2_inst] .ungroup_ok false
+# set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R3_inst] .ungroup_ok false
+# set_db [get_db hinst:trunc_adder_SH/Decision_Tree_inst/R4_inst] .ungroup_ok false
+# set_db [get_db hinst:trunc_adder_SH/comp_inst] .ungroup_ok false
 
 # Set the effort in the synthesis stages
 # set_db syn_generic_effort    high
